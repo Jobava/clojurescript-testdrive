@@ -74,28 +74,31 @@
 (defn poly []
   (svg-polygon (:sides @app-state) (:scale @app-state)) )
 
-(defn slider []
-  [:input {:type "range" 
-           :value (:sides @app-state) :min 3 :max 20
-           :style {:width "50%"}
-           :on-change (
+(defmacro slider [value-source {:min-value min-value :max-value max-value}]
+  [:div
+    [:input {:type "range" 
+             :value value-source :min min-value :max max-value
+             :style {:width "50%"}
+             :on-change (
                        fn [e]
                        (swap! app-state assoc :sides (.-target.value e))
                        )
-           }]
-  )
+             }]
+    [:input {:type "text"
+             :value (value-source)}]
+  ]
+)
 
-(defn slider-text []
-  [:input {:type "text"
-           :value (:sides @app-state)}])
-
-(defn render-component-at [component id]
-  (reagent/render-component [component]
+(defmacro render-component-at [component id value-source argsmap]
+  (reagent/render-component [component value-source argsmap]
                             (. js/document (getElementById id))))
 
-(render-component-at poly "poly")
-(render-component-at slider "slider")
-(render-component-at slider-text "slider-text")
+(render-component-at poly "poly" nil {})
+
+(render-component-at slider 
+                     "slider" 
+                     '(:sides @app-state) 
+                     {:min-value 3 :max-value 20})
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
