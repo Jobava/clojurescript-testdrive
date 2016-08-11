@@ -15,6 +15,29 @@
 
 (defn cos [x] (. js/Math (cos x)))
 
+(defn atan2 [y x] (. js/Math (atan2 y x)))
+
+(defn sqrt [x] (. js/Math (sqrt x)))
+
+(defn rotate [[x y] alpha]
+  "rotate a point around the origin by angle in radians"
+  [(- (* x (cos alpha)) (* y (sin alpha)))
+   (+ (* x (sin alpha)) (* y (cos alpha)))])
+
+(defn translate [[x y] [xd yd]]
+  "translate a point by another point"
+  [(+ x xd) (+ y yd)])
+
+(def origin [0 0])
+
+(defn deg-to-rad [deg]
+  "convert an angle in degrees into radians"
+  (* pi (/ deg 180)))
+
+(defn rad-to-deg [rad]
+  "convert an angle in radians to degrees"
+  (* 180 (/ rad pi)))
+
 (defn point-on-circle [alpha]
   "get a point on a circle at a given alpha angle"
   [(cos alpha) (sin alpha)])
