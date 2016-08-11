@@ -74,16 +74,16 @@
 (defn poly []
   (svg-polygon (:sides @app-state) (:scale @app-state)) )
 
-(defn slider [src-atom key-in-atom 
-              {:min-value min-value :max-value max-value}]
+(defn slider [src-atom key-in-atom argsmap]
   [:div
     [:input {:type "range" 
              :value (get-in src-atom key-in-atom) 
-             :min min-value :max max-value
+             :min (get-in argsmap min-value) 
+             :max (get-in argsmap max-value)
              :style {:width "50%"}
              :on-change (
                        fn [e]
-                       (swap! app-state assoc :sides (.-target.value e))
+                       (swap! src-atom assoc key-in-atom (.-target.value e))
                        )
              }]
     [:input {:type "text"
