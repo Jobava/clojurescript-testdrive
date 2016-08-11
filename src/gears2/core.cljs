@@ -74,10 +74,12 @@
 (defn poly []
   (svg-polygon (:sides @app-state) (:scale @app-state)) )
 
-(defmacro slider [value-source {:min-value min-value :max-value max-value}]
+(defn slider [src-atom key-in-atom 
+              {:min-value min-value :max-value max-value}]
   [:div
     [:input {:type "range" 
-             :value value-source :min min-value :max max-value
+             :value (get-in src-atom key-in-atom) 
+             :min min-value :max max-value
              :style {:width "50%"}
              :on-change (
                        fn [e]
@@ -85,19 +87,19 @@
                        )
              }]
     [:input {:type "text"
-             :value (value-source)}]
+             :value (get-in src-atom key-in-atom)}]
   ]
 )
 
-(defmacro render-component-at [component id value-source argsmap]
-  (reagent/render-component [component value-source argsmap]
+(defn render-component-at [component id src-atom key-in-atom argsmap]
+  (reagent/render-component [component src-atom key-in-atom argsmap]
                             (. js/document (getElementById id))))
 
 (render-component-at poly "poly" nil {})
 
 (render-component-at slider 
                      "slider" 
-                     '(:sides @app-state) 
+                     app-state sides 
                      {:min-value 3 :max-value 20})
 
 (defn on-js-reload []
